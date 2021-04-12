@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong-migration
+  labels:
+    app: kong-root
+    component: kong-migration
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: kong-migration
+  template:
+    metadata:
+      labels:
+        name: kong-migration
+    spec:
+      containers:
+        - name: kong-migration
+          image: 422635720234.dkr.ecr.sa-east-1.amazonaws.com/kong:latest
+          command: ["kong migrations bootstrap"]
+          env:
+            - name: KONG_PG_HOST
+              value: database-1.ct0ma78ojrxg.sa-east-1.rds.amazonaws.com
+      restartPolicy: Always

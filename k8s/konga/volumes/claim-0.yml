@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-data-konga-db-node-0
+  namespace: konga
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  # selector:
+  #   matchLabels:
+  #     system: konga-db
+  #     node: node-0

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    node: node-0
+    system: konga-db
+    namespace: application-master
+    type: amazonEBS
+  name: db-data-konga-db-node-0
+spec:
+  accessModes:
+  - ReadWriteMany
+  awsElasticBlockStore:
+    fsType: ext4
+    volumeID: vol-0bc02196ab67d8e79
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Delete

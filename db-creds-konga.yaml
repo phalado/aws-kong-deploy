@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-creds-konga
+type: Opaque
+data:
+  username: Ynljb2RlcnM=
+  password: Ynljb2RlcnMxMjM=

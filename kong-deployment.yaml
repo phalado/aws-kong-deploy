@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kong-deployment
+  labels:
+    app: kong-root
+    component: kong-deployment
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: kong-deployment
+  template:
+    metadata:
+      labels:
+        name: kong-deployment
+    spec:
+      containers:
+        - name: kong-deployment
+          image: 422635720234.dkr.ecr.sa-east-1.amazonaws.com/kong:latest
+          # command: ["/bin/sh", "-c", "kong migrations bootstrap"]
+          # args: ["KONG_PG_HOST"]
+          env:
+            - name: KONG_PG_HOST
+              value: 10.100.14.174
+            - name: KONG_PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-creds
+                  key: username
+            - name: KONG_PROXY_LISTEN
+              value: 0.0.0.0:8000
+            - name: KONG_PROXY_LISTEN_SSL
+              value: 0.0.0.0:8443
+            - name: KONG_ADMIN_LISTEN
+              value: 0.0.0.0:8001
+          ports:
+            - containerPort: 8000
+              name: kong-api
+            - containerPort: 8001
+              name: kong-admin
+      restartPolicy: Always

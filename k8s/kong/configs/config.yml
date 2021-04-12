@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kong
+  name: kong-config
+  labels:
+    app: kong
+data:
+  app.db.database: "kong.kong"
+  app.db.cluster.name: "kong_cluster"
+  app.db.cluster.replication.db: "replica_db"
+  app.db.pool.backends: "0:kong-db-node1-service::::,1:kong-db-node2-service::::,2:kong-db-node3-service::::,3:kong-db-node4-service::::,4:kong-db-node5-service::::"

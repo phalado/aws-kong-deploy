@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: konga
+  name: konga-config
+  labels:
+    app: konga
+data:
+  app.db.database: "konga.konga"
+  app.db.cluster.name: "konga_cluster"
+  app.db.cluster.replication.db: "replica_db"
+  app.db.pool.backends: "0:konga-db-node-0.konga-db::::,1:konga-db-node-1.konga-db::::,2:konga-db-node-2.konga-db::::"

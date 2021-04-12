@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: kong
+  name: kong-db-node5
+  labels:
+    name: database
+    node: node5
+    system: kong
+    app: kong
+spec:
+  replicas: 1
+  serviceName: "kong-db-node5"
+  selector:
+    matchLabels:
+      app: kong
+  template:
+    metadata:
+      labels:
+        name: database
+        node: node5
+        system: kong
+        app: kong
+    spec:
+      containers:
+        - name: kong-db-node5
+          image: postdock/postgres:latest-postgres11-repmgr40
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "10m"
+          env:
+            - name: "REPMGR_WAIT_POSTGRES_START_TIMEOUT"
+              value: "600"
+            - name: "REPLICATION_PRIMARY_HOST"
+              value: "kong-db-node4-service"
+            - name: "NODE_ID"
+              value: "5"
+            - name: "NODE_NAME"
+              value: "node5"
+            - name: "CLUSTER_NODE_NETWORK_NAME"
+              value: "kong-db-node5-service"
+
+            # Cluster configs
+            - name: "CLUSTER_NAME"
+              valueFrom:
+                configMapKeyRef:
+                  name: kong-config
+                  key: app.db.cluster.name
+            - name: "REPLICATION_DB"
+              valueFrom:
+                configMapKeyRef:
+                  name: kong-config
+                  key: app.db.cluster.replication.db
+            - name: "REPLICATION_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: kong-secret
+                  key: app.db.cluster.replication.user
+            - name: "REPLICATION_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: kong-secret
+                  key: app.db.cluster.replication.password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath:  /var/lib/postgresql/data
+              name: pg-data-volume
+      volumes:
+        - name: pg-data-volume
+          persistentVolumeClaim:
+            claimName: application-db-node5-claim

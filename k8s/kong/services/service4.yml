@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kong
+  name: kong-db-node4-service
+  labels:
+    name: database
+    node: node4
+    system: kong
+spec:
+  clusterIP: None
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    name: database
+    node: node4
+    system: kong
